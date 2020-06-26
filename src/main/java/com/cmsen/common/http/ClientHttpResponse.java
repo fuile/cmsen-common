@@ -7,6 +7,9 @@
  */
 package com.cmsen.common.http;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +24,8 @@ public class ClientHttpResponse {
     /**
      * 响应头
      */
-    private Map<String, String> headers;
+    private Map<String, String> headers = new HashMap<>();
+    private List<String> cookies = new ArrayList<>();
     private StringBuilder body;
 
     public ClientHttpResponse() {
@@ -57,6 +61,33 @@ public class ClientHttpResponse {
 
     public ClientHttpResponse setMessage(String message) {
         this.message = message;
+        return this;
+    }
+
+    public String getCookie() {
+        StringBuilder sb = new StringBuilder();
+        int s = cookies.size();
+        int i = 0;
+        for (int i1 = 0; i1 < cookies.size(); i1++) {
+            sb.append(cookies.get(i));
+            if (i < s) {
+                sb.append(";");
+            }
+            i++;
+        }
+        return sb.toString();
+    }
+
+    public String getCookie(int i) {
+        return cookies.get(i);
+    }
+
+    public List<String> getCookies() {
+        return cookies;
+    }
+
+    public ClientHttpResponse setCookies(List<String> cookies) {
+        this.cookies = cookies;
         return this;
     }
 
