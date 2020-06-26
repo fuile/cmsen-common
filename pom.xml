@@ -3,12 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.cmsen</groupId>
+    <groupId>com.cmsen.common</groupId>
     <artifactId>cmsen-common</artifactId>
     <version>1.0.1</version>
     <name>cmsen-common</name>
-    <description>flexible CmsEn framework for Java</description>
+    <description>Development common package for java project</description>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <release.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</release.repo.url>
+        <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots/</snapshot.repo.url>
+    </properties>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -19,9 +23,19 @@
         <name>cmsen</name>
         <url>http://www.cmsen.com</url>
     </organization>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <distributionManagement>
+        <repository>
+            <id>sonatype</id>
+            <name>Nexus Release Repository</name>
+            <url>${release.repo.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>${snapshot.repo.url}</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
