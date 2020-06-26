@@ -25,7 +25,7 @@ public class ClientHttpRequest {
     private String protocol = "http";
     private String host;
     private int port = -1;
-    private String path;
+    private String path = "";
     private String method = "GET";
     private String params;
     private byte[] stream;
