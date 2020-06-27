@@ -67,7 +67,7 @@ public class ClientHttpConnect {
         ClientHttpResponse httpResponse = new ClientHttpResponse();
         httpResponse.setStatus(connection.getResponseCode());
         httpResponse.setMessage(connection.getResponseMessage());
-        httpResponse.setHeaders(getResponseHeader(connection));
+        httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
         httpResponse.setBody(getResponseBody(httpResponse.isSuccess() ? connection.getInputStream() : connection.getErrorStream()));
         connection.disconnect();
         return httpResponse;
@@ -91,7 +91,7 @@ public class ClientHttpConnect {
         ClientHttpResponse httpResponse = new ClientHttpResponse();
         httpResponse.setStatus(connection.getResponseCode());
         httpResponse.setMessage(connection.getResponseMessage());
-        httpResponse.setHeaders(getResponseHeader(connection));
+        httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
         httpResponse.setBody(getResponseBody(httpResponse.isSuccess() ? connection.getInputStream() : connection.getErrorStream()));
         connection.disconnect();
         return httpResponse;
@@ -111,9 +111,13 @@ public class ClientHttpConnect {
         return result;
     }
 
-    protected static Map<String, String> getResponseHeader(URLConnection connection) {
+    protected static Map<String, String> getResponseHeader(ClientHttpResponse httpResponse, URLConnection connection) {
         Map<String, String> headers = new HashMap<>();
         for (Map.Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
+            if ("Set-Cookie".equalsIgnoreCase(header.getKey())) {
+                httpResponse.setCookies(header.getValue());
+                continue;
+            }
             headers.put(header.getKey(), header.getValue().get(0));
         }
         return headers;
@@ -127,9 +131,12 @@ public class ClientHttpConnect {
             connection.setRequestProperty("Content-Type", ContentEnctype.URLENCODED);
         }
         if (null != httpRequest.getHeaders()) {
-            for (Map.Entry<String, Object> entry : httpRequest.getHeaders().entrySet()) {
-                connection.setRequestProperty(entry.getKey(), entry.getValue().toString());
+            for (Map.Entry<String, String> entry : httpRequest.getHeaders().entrySet()) {
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
             }
+        }
+        if (null != httpRequest.getCookies()) {
+            connection.setRequestProperty("Cookie", httpRequest.getCookie());
         }
     }
 

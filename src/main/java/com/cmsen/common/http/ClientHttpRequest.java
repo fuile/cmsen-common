@@ -29,7 +29,8 @@ public class ClientHttpRequest {
     private String method = "GET";
     private String params;
     private byte[] stream;
-    private Map<String, Object> headers;
+    private Map<String, String> cookies;
+    private Map<String, String> headers;
     private Map<String, Object> paramsMap;
 
     public ClientHttpRequest() {
@@ -39,7 +40,7 @@ public class ClientHttpRequest {
         setUrl(url);
     }
 
-    public ClientHttpRequest(String url, String params, Map<String, Object> headers) {
+    public ClientHttpRequest(String url, String params, Map<String, String> headers) {
         setUrl(url).setParams(params).setHeaders(headers);
     }
 
@@ -157,15 +158,48 @@ public class ClientHttpRequest {
         return (null != paramsMap || null != params) || null != stream;
     }
 
-    public Map<String, Object> getHeaders() {
+    public String getCookie() {
+        StringBuilder sb = new StringBuilder();
+        int s = cookies.size();
+        int i = 0;
+        for (Map.Entry<String, String> cookie : cookies.entrySet()) {
+            sb.append(cookie.getKey());
+            sb.append("=");
+            sb.append(cookie.getValue());
+            if (i < s) {
+                sb.append(";");
+            }
+            i++;
+        }
+        return sb.toString();
+    }
+
+    public Map<String, String> getCookies() {
+        return cookies;
+    }
+
+    public ClientHttpRequest setCookies(Map<String, String> cookies) {
+        this.cookies = cookies;
+        return this;
+    }
+
+    public ClientHttpRequest setCookies(String Key, String value) {
+        if (null == this.cookies) {
+            this.cookies = new HashMap<>();
+        }
+        this.cookies.put(Key, value);
+        return this;
+    }
+
+    public Map<String, String> getHeaders() {
         return headers;
     }
 
     public String getHeader(String Key) {
-        return null == this.headers ? null : headers.get(Key).toString();
+        return null == this.headers ? null : headers.get(Key);
     }
 
-    public ClientHttpRequest setHeaders(Map<String, Object> headers) {
+    public ClientHttpRequest setHeaders(Map<String, String> headers) {
         this.headers = headers;
         return this;
     }

@@ -41,7 +41,7 @@ public class ClientHttp extends RequestConsts {
         return get(url, params, null);
     }
 
-    public static ClientHttpResponse get(String url, String params, Map<String, Object> headers) {
+    public static ClientHttpResponse get(String url, String params, Map<String, String> headers) {
         return get(new ClientHttpRequest(url, params, headers));
     }
 
@@ -53,7 +53,7 @@ public class ClientHttp extends RequestConsts {
         return post(url, params, null);
     }
 
-    public static ClientHttpResponse post(String url, String params, Map<String, Object> headers) {
+    public static ClientHttpResponse post(String url, String params, Map<String, String> headers) {
         return post(new ClientHttpRequest(url, params, headers));
     }
 
@@ -65,7 +65,7 @@ public class ClientHttp extends RequestConsts {
         return put(url, params, null);
     }
 
-    public static ClientHttpResponse put(String url, String params, Map<String, Object> headers) {
+    public static ClientHttpResponse put(String url, String params, Map<String, String> headers) {
         return put(new ClientHttpRequest(url, params, headers));
     }
 
@@ -77,7 +77,7 @@ public class ClientHttp extends RequestConsts {
         return delete(url, params, null);
     }
 
-    public static ClientHttpResponse delete(String url, String params, Map<String, Object> headers) {
+    public static ClientHttpResponse delete(String url, String params, Map<String, String> headers) {
         return delete(new ClientHttpRequest(url, params, headers));
     }
 }
