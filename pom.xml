@@ -12,6 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <release.repo.url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</release.repo.url>
         <snapshot.repo.url>https://oss.sonatype.org/content/repositories/snapshots/</snapshot.repo.url>
+        <github.repo.url>https://maven.pkg.github.com/fuile/cmsen-common/</github.repo.url>
     </properties>
     <licenses>
         <license>
@@ -25,16 +26,21 @@
     </organization>
     <distributionManagement>
         <repository>
-            <id>sonatype</id>
-            <name>Nexus Release Repository</name>
-            <url>${release.repo.url}</url>
+            <id>github</id>
+            <name>GitHub fuile Apache Maven Packages</name>
+            <url>${github.repo.url}</url>
         </repository>
-        <snapshotRepository>
-            <id>sonatype</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>${snapshot.repo.url}</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
+        <!--        <repository>-->
+        <!--            <id>sonatype</id>-->
+        <!--            <name>Nexus Release Repository</name>-->
+        <!--            <url>${release.repo.url}</url>-->
+        <!--        </repository>-->
+        <!--        <snapshotRepository>-->
+        <!--            <id>sonatype</id>-->
+        <!--            <name>Sonatype Nexus Snapshots</name>-->
+        <!--            <url>${snapshot.repo.url}</url>-->
+        <!--            <uniqueVersion>false</uniqueVersion>-->
+        <!--        </snapshotRepository>-->
     </distributionManagement>
     <dependencies>
         <dependency>
