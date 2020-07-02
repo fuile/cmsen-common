@@ -25,6 +25,7 @@ public class ClientHttpRequest {
     private String protocol = "http";
     private String host;
     private int port = -1;
+    private int timeOut = 30000;
     private String path = "";
     private String method = "GET";
     private String params;
@@ -214,6 +215,15 @@ public class ClientHttpRequest {
 
     public URLConnection openConnection() throws IOException {
         return getUrlConnect(url).openConnection();
+    }
+
+    public int getTimeOut() {
+        return timeOut;
+    }
+
+    public ClientHttpRequest setTimeOut(int timeOut) {
+        this.timeOut = timeOut;
+        return this;
     }
 
     @Override

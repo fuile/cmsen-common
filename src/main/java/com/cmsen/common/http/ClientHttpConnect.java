@@ -59,6 +59,7 @@ public class ClientHttpConnect {
         connection.setDoInput(true);
         connection.setDoOutput(httpRequest.isParamsXorStream());
         connection.setUseCaches(false);
+        connection.setConnectTimeout(httpRequest.getTimeOut());
         setRequestHeaders(connection, httpRequest);
         if (!httpRequest.getMethod().equals("GET")) {
             setRequestParams(connection, httpRequest);
@@ -83,6 +84,7 @@ public class ClientHttpConnect {
         connection.setDoInput(true);
         connection.setDoOutput(httpRequest.isParamsXorStream());
         connection.setUseCaches(false);
+        connection.setConnectTimeout(httpRequest.getTimeOut());
         setRequestHeaders(connection, httpRequest);
         if (!httpRequest.getMethod().equals("GET")) {
             setRequestParams(connection, httpRequest);
@@ -144,6 +146,7 @@ public class ClientHttpConnect {
         if (null != httpRequest && httpRequest.isParamsXorStream()) {
             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
             if (null != httpRequest.getParams()) {
+                connection.setRequestProperty("Content-Length", "" + httpRequest.getParams(StandardCharsets.UTF_8).length);
                 outputStream.write(httpRequest.getParams(StandardCharsets.UTF_8));
             } else if (null != httpRequest.getStream()) {
                 outputStream.write(httpRequest.getStream());
