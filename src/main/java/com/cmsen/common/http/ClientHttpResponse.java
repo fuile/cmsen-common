@@ -126,8 +126,15 @@ public class ClientHttpResponse {
         return this.status == 200;
     }
 
+    /**
+     * 判断请求响应是否是301、302重定向
+     */
+    public boolean isRedirect() {
+        return this.status == 301 || this.status == 302;
+    }
+
     @Override
     public String toString() {
-        return body.toString();
+        return null == body ? "" : body.toString();
     }
 }

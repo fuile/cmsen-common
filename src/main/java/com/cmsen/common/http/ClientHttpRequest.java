@@ -12,7 +12,6 @@ import com.cmsen.common.util.UrlUtil;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +25,7 @@ public class ClientHttpRequest {
     private String host;
     private int port = -1;
     private int timeOut = 30000;
+    private boolean followRedirect = false;
     private String path = "";
     private String method = "GET";
     private String params;
@@ -213,8 +213,8 @@ public class ClientHttpRequest {
         return this;
     }
 
-    public URLConnection openConnection() throws IOException {
-        return getUrlConnect(url).openConnection();
+    public URL openConnection() throws IOException {
+        return getUrlConnect(url);
     }
 
     public int getTimeOut() {
@@ -223,6 +223,15 @@ public class ClientHttpRequest {
 
     public ClientHttpRequest setTimeOut(int timeOut) {
         this.timeOut = timeOut;
+        return this;
+    }
+
+    public boolean isFollowRedirect() {
+        return followRedirect;
+    }
+
+    public ClientHttpRequest setFollowRedirect(boolean followRedirect) {
+        this.followRedirect = followRedirect;
         return this;
     }
 
