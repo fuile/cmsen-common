@@ -9,11 +9,9 @@ package com.cmsen.common.http;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,75 +23,110 @@ public class ClientHttpConnect {
     public static final String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
 
     public static ClientHttpResponse connect(ClientHttpRequest httpRequest) {
-        int status = 500;
-        String message = null;
-        try {
-            if (httpRequest.isProtocolSSL()) {
-                return https(httpRequest);
-            }
-            return http(httpRequest);
-        } catch (MalformedURLException e) {
-            message = "URL format error";
-            e.printStackTrace(System.err);
-        } catch (ConnectException e) {
-            status = 402;
-            message = "Internet connection failed";
-            e.printStackTrace(System.err);
-        } catch (UnknownHostException e) {
-            status = 404;
-            message = "Target is inaccessible";
-            e.printStackTrace(System.err);
-        } catch (Exception e) {
-            message = e.getMessage();
-            e.printStackTrace(System.err);
+        if (httpRequest.isProtocolSSL()) {
+            return https(httpRequest);
         }
-        return new ClientHttpResponse(message, status);
+        return http(httpRequest);
     }
 
-    public static ClientHttpResponse http(ClientHttpRequest httpRequest) throws IOException {
+    public static ClientHttpResponse http(ClientHttpRequest httpRequest) {
         if (httpRequest.isProtocolSSL()) {
             throw new IllegalArgumentException("Request protocol not supported");
         }
-        HttpURLConnection connection = (HttpURLConnection) httpRequest.openConnection();
-        connection.setRequestMethod(httpRequest.getMethod());
-        connection.setDoInput(true);
-        connection.setDoOutput(httpRequest.isParamsXorStream());
-        connection.setUseCaches(false);
-        setRequestHeaders(connection, httpRequest);
-        if (!httpRequest.getMethod().equals("GET")) {
-            setRequestParams(connection, httpRequest);
-        }
-        connection.connect();
         ClientHttpResponse httpResponse = new ClientHttpResponse();
-        httpResponse.setStatus(connection.getResponseCode());
-        httpResponse.setMessage(connection.getResponseMessage());
-        httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
-        httpResponse.setBody(getResponseBody(httpResponse.isSuccess() ? connection.getInputStream() : connection.getErrorStream()));
-        connection.disconnect();
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) httpRequest.openConnection().openConnection();
+            connection.setRequestMethod(httpRequest.getMethod());
+            connection.setDoInput(true);
+            connection.setDoOutput(httpRequest.isParamsXorStream());
+            connection.setUseCaches(false);
+            connection.setConnectTimeout(httpRequest.getTimeOut());
+            connection.setReadTimeout(httpRequest.getTimeOut());
+            connection.setInstanceFollowRedirects(httpRequest.isFollowRedirect());
+            setRequestHeaders(connection, httpRequest);
+            connection.connect();
+            if (!httpRequest.getMethod().equals("GET")) {
+                if (httpRequest.isParamsXorStream()) {
+                    OutputStream os = connection.getOutputStream();
+                    if (null != httpRequest.getParams()) {
+                        byte[] params = httpRequest.getParams(StandardCharsets.UTF_8);
+                        os.write(params);
+                    } else if (null != httpRequest.getStream()) {
+                        os.write(httpRequest.getStream());
+                    }
+                    os.flush();
+                    os.close();
+                }
+            }
+            int responseCode = connection.getResponseCode();
+            InputStream inputStream = connection.getInputStream();
+            if (responseCode >= HttpsURLConnection.HTTP_BAD_REQUEST) {
+                inputStream = connection.getErrorStream();
+            }
+            httpResponse.setStatus(responseCode);
+            httpResponse.setMessage(connection.getResponseMessage());
+            httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
+            httpResponse.setBody(getResponseBody(inputStream));
+            connection.disconnect();
+        } catch (Exception e) {
+            System.err.println("ClientHttpConnect: " + e.getMessage());
+            if (null != connection) {
+                connection.disconnect();
+            }
+            httpResponse = new ClientHttpResponse(e.getMessage(), 500);
+        }
         return httpResponse;
     }
 
-    public static ClientHttpResponse https(ClientHttpRequest httpRequest) throws IOException, NoSuchAlgorithmException, NoSuchProviderException, KeyManagementException {
+    public static ClientHttpResponse https(ClientHttpRequest httpRequest) {
         if (!httpRequest.isProtocolSSL()) {
             throw new IllegalArgumentException("Request protocol not supported");
         }
-        HttpsURLConnection connection = (HttpsURLConnection) httpRequest.openConnection();
-        connection.setSSLSocketFactory(ClientHttpCertificate.sslContext().getSocketFactory());
-        connection.setRequestMethod(httpRequest.getMethod());
-        connection.setDoInput(true);
-        connection.setDoOutput(httpRequest.isParamsXorStream());
-        connection.setUseCaches(false);
-        setRequestHeaders(connection, httpRequest);
-        if (!httpRequest.getMethod().equals("GET")) {
-            setRequestParams(connection, httpRequest);
-        }
-        connection.connect();
         ClientHttpResponse httpResponse = new ClientHttpResponse();
-        httpResponse.setStatus(connection.getResponseCode());
-        httpResponse.setMessage(connection.getResponseMessage());
-        httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
-        httpResponse.setBody(getResponseBody(httpResponse.isSuccess() ? connection.getInputStream() : connection.getErrorStream()));
-        connection.disconnect();
+        HttpsURLConnection connection = null;
+        try {
+            connection = (HttpsURLConnection) httpRequest.openConnection().openConnection();
+            connection.setSSLSocketFactory(ClientHttpCertificate.sslContext().getSocketFactory());
+            connection.setRequestMethod(httpRequest.getMethod());
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setUseCaches(false);
+            connection.setConnectTimeout(httpRequest.getTimeOut());
+            connection.setReadTimeout(httpRequest.getTimeOut());
+            connection.setInstanceFollowRedirects(httpRequest.isFollowRedirect());
+            setRequestHeaders(connection, httpRequest);
+            connection.connect();
+            if (!httpRequest.getMethod().equals("GET")) {
+                if (httpRequest.isParamsXorStream()) {
+                    OutputStream os = connection.getOutputStream();
+                    if (null != httpRequest.getParams()) {
+                        byte[] params = httpRequest.getParams(StandardCharsets.UTF_8);
+                        os.write(params);
+                    } else if (null != httpRequest.getStream()) {
+                        os.write(httpRequest.getStream());
+                    }
+                    os.flush();
+                    os.close();
+                }
+            }
+            int responseCode = connection.getResponseCode();
+            InputStream inputStream = connection.getInputStream();
+            if (responseCode >= HttpsURLConnection.HTTP_BAD_REQUEST) {
+                inputStream = connection.getErrorStream();
+            }
+            httpResponse.setStatus(responseCode);
+            httpResponse.setMessage(connection.getResponseMessage());
+            httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
+            httpResponse.setBody(getResponseBody(inputStream));
+            connection.disconnect();
+        } catch (Exception e) {
+            System.err.println("ClientHttpsConnect: " + e.getMessage());
+            if (null != connection) {
+                connection.disconnect();
+            }
+            httpResponse = new ClientHttpResponse(e.getMessage(), 500);
+        }
         return httpResponse;
     }
 
@@ -127,6 +160,11 @@ public class ClientHttpConnect {
         connection.setRequestProperty("Host", httpRequest.getUrl().getAuthority());
         connection.setRequestProperty("User-Agent", userAgent);
         connection.setRequestProperty("Connection", "Keep-Alive");
+        if (null != httpRequest.getParams()) {
+            connection.setRequestProperty("Content-Length", String.valueOf(httpRequest.getParams(StandardCharsets.UTF_8).length));
+        } else if (null != httpRequest.getStream()) {
+            connection.setRequestProperty("Content-Length", String.valueOf(httpRequest.getStream().length));
+        }
         if (httpRequest.getMethod().equals("POST")) {
             connection.setRequestProperty("Content-Type", ContentEnctype.URLENCODED);
         }
@@ -137,19 +175,6 @@ public class ClientHttpConnect {
         }
         if (null != httpRequest.getCookies()) {
             connection.setRequestProperty("Cookie", httpRequest.getCookie());
-        }
-    }
-
-    protected static void setRequestParams(URLConnection connection, ClientHttpRequest httpRequest) throws IOException {
-        if (null != httpRequest && httpRequest.isParamsXorStream()) {
-            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-            if (null != httpRequest.getParams()) {
-                outputStream.write(httpRequest.getParams(StandardCharsets.UTF_8));
-            } else if (null != httpRequest.getStream()) {
-                outputStream.write(httpRequest.getStream());
-            }
-            outputStream.flush();
-            outputStream.close();
         }
     }
 }
