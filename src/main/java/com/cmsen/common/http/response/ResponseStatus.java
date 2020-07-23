@@ -28,6 +28,8 @@ public enum ResponseStatus {
     private String message;
 
     ResponseStatus(int status, String message) {
+        this.status = status;
+        this.message = message;
     }
 
     public int getStatus() {
