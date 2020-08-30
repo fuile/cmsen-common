@@ -20,6 +20,7 @@ public class SocketClient {
     private SocketMessage socketMessage;
     private boolean connect;
     private boolean keepAlive;
+    private boolean terminated;
 
     public SocketClient() {
     }
@@ -110,6 +111,15 @@ public class SocketClient {
         return connect;
     }
 
+    public void disconnect(Socket socket) {
+        if (null != socket && !socket.isClosed()) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+            }
+        }
+    }
+
     public void connection() {
         connection(host, port);
     }
@@ -130,62 +140,69 @@ public class SocketClient {
         if (port <= 0) {
             throw new IllegalArgumentException("connect: port is not valid on remote machine");
         }
+        SocketThread socketThread = new SocketThread(3, socketMessage);
+        Socket socket = null;
         try {
-            Socket socket = new Socket(host, port);
+            socket = new Socket(host, port);
             socket.setKeepAlive(keepAlive);
             socket.setSoTimeout(timeOut);
             DataInputStream reader = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
             DataOutputStream writer = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            keepAliveListener(socket, socketMessage);
-            readerMessageListener(reader, socketMessage);
-            writerMessageListener(writer, socketMessage);
-            System.out.println("Connection established: " + socket);
+            terminated = false;
+            keepAliveListener(socketThread, socket);
+            readerMessageListener(socketThread, reader);
+            writerMessageListener(socketThread, writer, socket);
+            socketThread.getSocketMessage().onConnectSuccess(socketThread, socket);
         } catch (IOException e) {
-            System.err.println(String.format("%s, %s", e.getMessage(), "Automatic reconnection..."));
-            connection(host, port);
+            if (socketThread.getSocketMessage().onConnectFailed(e)) {
+                disconnect(socket);
+                connection(host, port);
+            }
         }
     }
 
-    private void readerMessageListener(DataInputStream reader, SocketMessage socketMessage) {
-        SocketThread.create(() -> {
+    private void readerMessageListener(SocketThread socketThread, DataInputStream reader) {
+        socketThread.run(() -> {
             try {
-                socketMessage.onReadMessage(reader);
+                socketThread.getSocketMessage().onReadMessage(reader);
             } catch (IOException e) {
-                e.printStackTrace();
+                socketThread.getSocketMessage().onReadMessageError(e);
             }
         });
     }
 
-    private void writerMessageListener(DataOutputStream writer, SocketMessage socketMessage) {
-        SocketThread.create(() -> {
-            while (true) {
+
+    private void writerMessageListener(SocketThread socketThread, DataOutputStream writer, Socket socket) {
+        socketThread.run(() -> {
+            while (!terminated) {
                 if (message.size() > 0) {
                     try {
-                        byte[] bytes = message.get(0);
-                        socketMessage.onSendMessage(writer, bytes);
+                        socketThread.getSocketMessage().onSendMessage(writer, message.get(0));
                         message.remove(0);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        socketThread.getSocketMessage().onSendMessageError(e, message);
                     }
                 }
             }
+            disconnect(socket);
+            connection(host, port);
         });
     }
 
-    private void keepAliveListener(Socket socket, SocketMessage socketMessage) {
-        SocketThread.create(() -> {
-            long millis = socketMessage.heartRate();
-            int data = socketMessage.heartRateData();
+    private void keepAliveListener(SocketThread socketThread, Socket socket) {
+        socketThread.run(() -> {
+            long millis = socketThread.getSocketMessage().heartRate();
             while (true) {
                 if (millis > 0) {
-                    SocketThread.sleep(millis);
                     try {
-                        socket.sendUrgentData(data);
+                        socket.sendUrgentData(socketThread.getSocketMessage().heartRateData());
                     } catch (IOException e) {
-                        System.err.println(String.format("%s, %dms after, %s", e.getMessage(), millis, "Automatic reconnection..."));
-                        connection(host, port);
+                        socketThread.getSocketMessage().heartRateDataError(e);
+                        socketThread.stop();
+                        terminated = true;
                         break;
                     }
+                    SocketThread.sleep(millis);
                 }
             }
         });
