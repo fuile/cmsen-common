@@ -180,7 +180,11 @@ public class SocketClient {
                         socketThread.getSocketMessage().onSendMessage(writer, message.get(0));
                         message.remove(0);
                     } catch (IOException e) {
-                        socketThread.getSocketMessage().onSendMessageError(e, message);
+                        if (socketThread.getSocketMessage().onSendMessageError(e, message)) {
+                            socketThread.stop();
+                            terminated = true;
+                            break;
+                        }
                     }
                 }
             }

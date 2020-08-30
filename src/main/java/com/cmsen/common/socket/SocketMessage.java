@@ -29,7 +29,8 @@ public interface SocketMessage {
     default void onReadMessageError(IOException e) {
     }
 
-    default void onSendMessageError(IOException e, List<byte[]> message) {
+    default boolean onSendMessageError(IOException e, List<byte[]> message) {
+        return true;
     }
 
     default void onConnectSuccess(SocketThread socketThread, Socket socket) {
