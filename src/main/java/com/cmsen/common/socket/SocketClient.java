@@ -182,7 +182,7 @@ public class SocketClient {
                     try {
                         socket.sendUrgentData(data);
                     } catch (IOException e) {
-                        System.err.println(String.format("%s, %ds after, %s", e.getMessage(), millis, "Automatic reconnection..."));
+                        System.err.println(String.format("%s, %dms after, %s", e.getMessage(), millis, "Automatic reconnection..."));
                         connection(host, port);
                         break;
                     }
