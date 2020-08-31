@@ -11,7 +11,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.List;
+import java.util.Queue;
 
 public interface SocketMessage {
 
@@ -29,7 +29,7 @@ public interface SocketMessage {
     default void onReadMessageError(IOException e) {
     }
 
-    default boolean onSendMessageError(IOException e, List<byte[]> message) {
+    default boolean onSendMessageError(IOException e, Queue<byte[]> message) {
         return false;
     }
 
@@ -45,4 +45,6 @@ public interface SocketMessage {
 
     void onSendMessage(DataOutputStream writer, byte[] message) throws IOException;
 
+    default void onSendMessageBefore(Queue<byte[]> message, boolean terminated) {
+    }
 }

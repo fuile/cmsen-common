@@ -7,6 +7,9 @@
  */
 package com.cmsen.common.util;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class ByteUtil {
     public static byte[] merger(byte[]... values) {
         int byteLength = 0;
@@ -48,6 +51,24 @@ public class ByteUtil {
         b[1] = (byte) (n & 0xff);
         b[0] = (byte) (n >> 8 & 0xff);
         return b;
+    }
+
+    public static byte[] toBytes2(int... data) {
+        List<byte[]> byteLists = new LinkedList<>();
+        int byteLength = 0;
+        for (int i = 0; i < data.length; i++) {
+            byte[] bytes = ByteUtil.toBytes2(data[i]);
+            byteLists.add(bytes);
+            byteLength += bytes.length;
+        }
+        byte[] bytes = new byte[byteLength];
+        int l = 0;
+        for (byte[] currentByte : byteLists) {
+            System.arraycopy(currentByte, 0, bytes, l, currentByte.length);
+            l += currentByte.length;
+        }
+        byteLists.clear();
+        return bytes;
     }
 
     public static String toHex(byte[] buf) {
