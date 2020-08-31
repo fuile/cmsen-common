@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.util.List;
 
 public interface SocketMessage {
+
     default long heartRate() {
         return 3000;
     }
@@ -23,22 +24,19 @@ public interface SocketMessage {
     }
 
     default void heartRateDataError(IOException e) {
-        System.err.println(String.format("%s, %dms after, %s", e.getMessage(), heartRate(), "Automatic reconnection..."));
     }
 
     default void onReadMessageError(IOException e) {
     }
 
     default boolean onSendMessageError(IOException e, List<byte[]> message) {
-        return true;
+        return false;
     }
 
     default void onConnectSuccess(SocketThread socketThread, Socket socket) {
-        System.out.println("Connection established: " + socket);
     }
 
     default boolean onConnectFailed(IOException e) {
-        System.err.println(String.format("%s, %s", e.getMessage(), "Automatic reconnection..."));
         return true;
     }
 

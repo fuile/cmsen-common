@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class SocketClient {
     private String host;
@@ -21,6 +22,7 @@ public class SocketClient {
     private boolean connect;
     private boolean keepAlive;
     private boolean terminated;
+    private Logger log = Logger.getLogger(SocketClient.class.getName());
 
     public SocketClient() {
     }
@@ -152,8 +154,10 @@ public class SocketClient {
             keepAliveListener(socketThread, socket);
             readerMessageListener(socketThread, reader);
             writerMessageListener(socketThread, writer, socket);
+            log.info("Connection established: " + socket);
             socketThread.getSocketMessage().onConnectSuccess(socketThread, socket);
         } catch (IOException e) {
+            log.severe(e.getMessage() + ", Automatic reconnection...");
             if (socketThread.getSocketMessage().onConnectFailed(e)) {
                 disconnect(socket);
                 connection(host, port);
@@ -177,8 +181,9 @@ public class SocketClient {
             while (!terminated) {
                 if (message.size() > 0) {
                     try {
-                        socketThread.getSocketMessage().onSendMessage(writer, message.get(0));
+                        byte[] bytes = message.get(0);
                         message.remove(0);
+                        socketThread.getSocketMessage().onSendMessage(writer, bytes);
                     } catch (IOException e) {
                         if (socketThread.getSocketMessage().onSendMessageError(e, message)) {
                             socketThread.stop();
@@ -201,6 +206,7 @@ public class SocketClient {
                     try {
                         socket.sendUrgentData(socketThread.getSocketMessage().heartRateData());
                     } catch (IOException e) {
+                        log.severe(e.getMessage() + ", " + millis + "ms after, Automatic reconnection...");
                         socketThread.getSocketMessage().heartRateDataError(e);
                         socketThread.stop();
                         terminated = true;
