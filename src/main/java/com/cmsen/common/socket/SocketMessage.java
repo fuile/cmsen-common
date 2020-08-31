@@ -13,6 +13,11 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Queue;
 
+/**
+ * 套接字消息
+ *
+ * @author jared.Yan (yanhuaiwen@163.com)
+ */
 public interface SocketMessage {
 
     default long heartRate() {

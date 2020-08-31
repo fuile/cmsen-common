@@ -11,11 +11,16 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
 
+/**
+ * 套接字服务端
+ *
+ * @author jared.Yan (yanhuaiwen@163.com)
+ */
 public class SocketServer {
     private int port = 5209;
-    private List<byte[]> message = new LinkedList<>();
+    private static Queue<byte[]> message = new LinkedList<>();
     private SocketMessage socketMessage;
     private boolean start;
 
@@ -28,7 +33,7 @@ public class SocketServer {
         return this;
     }
 
-    public List<byte[]> getSendMessages() {
+    public Queue<byte[]> getSendMessages() {
         return message;
     }
 
@@ -102,11 +107,10 @@ public class SocketServer {
     private void writerMessageListener(DataOutputStream writer, SocketMessage socketMessage) {
         SocketThread.create(() -> {
             while (true) {
-                if (message.size() > 0) {
+                if (!message.isEmpty()) {
                     try {
-                        byte[] bytes = message.get(0);
+                        byte[] bytes = message.poll();
                         socketMessage.onSendMessage(writer, bytes);
-                        message.remove(0);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

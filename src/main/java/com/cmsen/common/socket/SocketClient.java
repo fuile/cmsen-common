@@ -16,6 +16,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Logger;
 
+/**
+ * 套接字客户端
+ *
+ * @author jared.Yan (yanhuaiwen@163.com)
+ */
 public class SocketClient {
     private final Logger log = Logger.getLogger(SocketClient.class.getName());
     /**

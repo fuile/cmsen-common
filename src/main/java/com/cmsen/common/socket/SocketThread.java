@@ -11,6 +11,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 套接字连接池
+ *
+ * @author jared.Yan (yanhuaiwen@163.com)
+ */
 public class SocketThread {
     private ExecutorService executorService;
     private SocketMessage socketMessage;
