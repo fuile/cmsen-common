@@ -18,20 +18,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class SocketThread {
     private ExecutorService executorService;
-    private SocketMessage socketMessage;
 
-    public SocketThread(SocketMessage socketMessage) {
+    public SocketThread() {
         this.executorService = Executors.newCachedThreadPool();
-        this.socketMessage = socketMessage;
     }
 
-    public SocketThread(int num, SocketMessage socketMessage) {
+    public SocketThread(int num) {
         this.executorService = Executors.newFixedThreadPool(num);
-        this.socketMessage = socketMessage;
-    }
-
-    public SocketMessage getSocketMessage() {
-        return socketMessage;
     }
 
     public ExecutorService getExecutorService() {

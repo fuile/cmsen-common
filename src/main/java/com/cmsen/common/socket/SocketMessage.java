@@ -7,11 +7,8 @@
  */
 package com.cmsen.common.socket;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
-import java.util.Queue;
+import java.nio.ByteBuffer;
 
 /**
  * 套接字消息
@@ -19,37 +16,87 @@ import java.util.Queue;
  * @author jared.Yan (yanhuaiwen@163.com)
  */
 public interface SocketMessage {
-
+    /**
+     * 心跳检测间隔
+     *
+     * @return long [0=关闭心跳检测]
+     */
     default long heartRate() {
-        return 3000;
+        return 0;
     }
 
+    /**
+     * 心跳检测数据
+     *
+     * @return int
+     */
     default int heartRateData() {
         return 0xff;
     }
 
-    default void heartRateDataError(IOException e) {
-    }
-
-    default void onReadMessageError(IOException e) {
-    }
-
-    default boolean onSendMessageError(IOException e, Queue<byte[]> message) {
+    /**
+     * 心跳检测错误
+     *
+     * @param e 异常信息
+     * @return boolean [true=连接失败自动重连], 默认false关闭自动重连
+     */
+    default boolean heartRateError(Exception e) {
         return false;
     }
 
-    default void onConnectSuccess(SocketThread socketThread, Socket socket) {
+
+    /**
+     * 完成连接时
+     *
+     * @param socket 套接字对象
+     */
+    default void finishConnect(Socket socket) {
     }
 
-    default boolean onConnectFailed(IOException e) {
-        return true;
+    /**
+     * 连接错误
+     *
+     * @param e 异常信息
+     * @return boolean [true=连接失败自动重连], 默认false关闭自动重连
+     */
+    default boolean connectError(Exception e) {
+        return false;
     }
 
-    void onReadMessage(DataInputStream reader) throws IOException;
+    /**
+     * 消息发送时
+     *
+     * @param buffer 正在发送的消息
+     * @throws Exception
+     */
+    default void send(ByteBuffer buffer) throws Exception {
+    }
 
+    /**
+     * 消息发送时错误打印
+     *
+     * @param e 异常信息
+     * @return boolean [true=发送失败自动重连], 默认false关闭自动重连
+     */
+    default boolean sendError(Exception e) {
+        return false;
+    }
 
-    void onSendMessage(DataOutputStream writer, byte[] message) throws IOException;
+    /**
+     * 消息接收时
+     *
+     * @param buffer 正在接收的消息
+     * @throws Exception
+     */
+    void receive(ByteBuffer buffer) throws Exception;
 
-    default void onSendMessageBefore(Queue<byte[]> message, boolean terminated) {
+    /**
+     * 消息接收时错误打印
+     *
+     * @param e 异常信息
+     * @return boolean [true=尝试重新接收]
+     */
+    default boolean receiveError(Exception e) {
+        return false;
     }
 }
