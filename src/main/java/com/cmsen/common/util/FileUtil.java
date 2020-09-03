@@ -9,11 +9,12 @@ package com.cmsen.common.util;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.WatchEvent.Kind;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author jared.Yan (yanhuaiwen@163.com)
@@ -278,5 +279,22 @@ public class FileUtil {
             }
         }
         return false;
+    }
+
+    public static final Kind<Path> WATCH_CREATE = StandardWatchEventKinds.ENTRY_CREATE;
+    public static final Kind<Path> WATCH_MODIFY = StandardWatchEventKinds.ENTRY_MODIFY;
+    public static final Kind<Path> WATCH_DELETE = StandardWatchEventKinds.ENTRY_DELETE;
+
+    public static void watchFolder(String path, Function<WatchEvent<?>, ?> watchEvent, Kind<?>... events) throws IOException, InterruptedException {
+        WatchService watchService = FileSystems.getDefault().newWatchService();
+        Path paths = Paths.get(path);
+        paths.register(watchService, events);
+        while (true) {
+            WatchKey watchKey = watchService.take();
+            for (WatchEvent<?> event : watchKey.pollEvents()) {
+                watchEvent.apply(event);
+            }
+            watchKey.reset();
+        }
     }
 }
