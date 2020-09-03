@@ -285,14 +285,16 @@ public class FileUtil {
     public static final Kind<Path> WATCH_MODIFY = StandardWatchEventKinds.ENTRY_MODIFY;
     public static final Kind<Path> WATCH_DELETE = StandardWatchEventKinds.ENTRY_DELETE;
 
-    public static void watchFolder(String path, Function<WatchEvent<?>, ?> watchEvent, Kind<?>... events) throws IOException, InterruptedException {
+    public static void watchFolder(String path, Function<WatchEvent<?>, Boolean> watchEvent, Kind<?>... events) throws IOException, InterruptedException {
         WatchService watchService = FileSystems.getDefault().newWatchService();
         Path paths = Paths.get(path);
         paths.register(watchService, events);
         while (true) {
             WatchKey watchKey = watchService.take();
             for (WatchEvent<?> event : watchKey.pollEvents()) {
-                watchEvent.apply(event);
+                if (watchEvent.apply(event)) {
+                    break;
+                }
             }
             watchKey.reset();
         }
