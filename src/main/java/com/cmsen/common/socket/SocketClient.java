@@ -37,7 +37,7 @@ public class SocketClient {
     private final Logger log = Logger.getLogger(SocketClient.class.getName());
 
     public SocketClient() {
-        this("127.0.0.1", 5209);
+        this(SocketConstant.HOST_ADDRESS, SocketConstant.HOST_PORT);
     }
 
     public SocketClient(String serverIp, int serverPort) {

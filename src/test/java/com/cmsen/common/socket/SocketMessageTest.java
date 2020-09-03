@@ -41,12 +41,12 @@ public class SocketMessageTest implements SocketMessage {
     @Override
     public long heartRate() {
         // 0-关闭心跳检测
-        return 0;
+        return 3000;
     }
 
     @Override
     public int heartRateData() {
-        return 0xff;
+        return 111;
     }
 
     @Override
