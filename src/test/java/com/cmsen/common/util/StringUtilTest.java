@@ -6,6 +6,7 @@ public class StringUtilTest extends TestCase {
     public void test() {
         String str = "";
 
+        System.err.println("str=" + str);
         System.err.println("isBlank: " + StringUtil.isBlank(str));
         System.err.println("isNotBlank: " + StringUtil.isNotBlank(str));
         System.err.println("isNotEmpty: " + StringUtil.isNotEmpty(str));

@@ -299,4 +299,23 @@ public class FileUtil {
             watchKey.reset();
         }
     }
+
+    public static boolean checkFileWritingOn(String fileName) {
+        long oldLen = 0;
+        long newLen = 0;
+        File file = new File(fileName);
+        while (true) {
+            newLen = file.length();
+            if ((newLen - oldLen) > 0) {
+                oldLen = newLen;
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                return true;
+            }
+        }
+    }
 }
