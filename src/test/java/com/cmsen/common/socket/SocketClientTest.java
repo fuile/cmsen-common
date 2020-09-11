@@ -1,8 +1,5 @@
 package com.cmsen.common.socket;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * 套接字客户端测试 - 示例
  *
@@ -12,15 +9,15 @@ public class SocketClientTest {
     private SocketClient client;
 
     public static void main(String[] args) {
-        SocketClientTest socketClientTest = new SocketClientTest();
-        socketClientTest.create();
-        // 使用定时发送
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                socketClientTest.API();
-            }
-        }, 3000);
+        // SocketClientTest socketClientTest = new SocketClientTest();
+        // socketClientTest.create();
+        // // 使用定时发送
+        // new Timer().schedule(new TimerTask() {
+        //     @Override
+        //     public void run() {
+        //         socketClientTest.API();
+        //     }
+        // }, 3000);
     }
 
     public void create() {

@@ -46,7 +46,7 @@ public class SocketMessageTest implements SocketMessage {
 
     @Override
     public int heartRateData() {
-        return 111;
+        return 0xff;
     }
 
     @Override

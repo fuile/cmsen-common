@@ -1,6 +1,7 @@
 package com.cmsen.common.util;
 
 import java.util.Collection;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -64,9 +65,15 @@ public class StringUtil {
     }
 
     public static String UUID() {
-        return UUID.randomUUID()
-                .toString()
-                .toUpperCase()
-                .replaceAll("-", "");
+        String uuid = UUID.randomUUID().toString();
+        return uuid.substring(0, 8) +
+                uuid.substring(9, 13) +
+                uuid.substring(14, 18) +
+                uuid.substring(19, 23) +
+                uuid.substring(24);
+    }
+
+    public static int randomNumber(int len) {
+        return new Random().nextInt(len) + 1;
     }
 }
