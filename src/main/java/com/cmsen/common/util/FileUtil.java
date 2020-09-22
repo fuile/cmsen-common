@@ -173,6 +173,27 @@ public class FileUtil {
     }
 
     /**
+     * 路径地址修正
+     *
+     * @param path     路径
+     * @param filename 文件名
+     * @return string
+     */
+    public static String[] transformPath(String path, String filename) {
+        String regex = "([\\|/]+)";
+        String separator = File.separator;
+        path = path.replaceAll(regex, separator.replace("\\", "\\\\"));
+
+        // 判断是否已分割符结尾，如果没有测自动补充
+        if (!path.endsWith(separator)) {
+            path = path + separator;
+        }
+        System.err.println(path);
+        System.err.println(path);
+        return new String[]{path + filename, path, filename};
+    }
+
+    /**
      * 获得指定文件的byte数组
      *
      * @param file File对象

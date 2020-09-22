@@ -60,9 +60,11 @@ public class ClientHttpConnect {
                 }
             }
             int responseCode = connection.getResponseCode();
-            InputStream inputStream = connection.getInputStream();
+            InputStream inputStream;
             if (responseCode >= HttpsURLConnection.HTTP_BAD_REQUEST) {
                 inputStream = connection.getErrorStream();
+            } else {
+                inputStream = connection.getInputStream();
             }
             httpResponse.setStatus(responseCode);
             httpResponse.setMessage(connection.getResponseMessage());
@@ -111,9 +113,11 @@ public class ClientHttpConnect {
                 }
             }
             int responseCode = connection.getResponseCode();
-            InputStream inputStream = connection.getInputStream();
+            InputStream inputStream;
             if (responseCode >= HttpsURLConnection.HTTP_BAD_REQUEST) {
                 inputStream = connection.getErrorStream();
+            } else {
+                inputStream = connection.getInputStream();
             }
             httpResponse.setStatus(responseCode);
             httpResponse.setMessage(connection.getResponseMessage());
