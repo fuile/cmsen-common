@@ -1,6 +1,7 @@
 package com.cmsen.common.util;
 
 import java.util.Collection;
+import java.util.Formatter;
 import java.util.Random;
 import java.util.UUID;
 
@@ -75,5 +76,15 @@ public class StringUtil {
 
     public static int randomNumber(int len) {
         return new Random().nextInt(len) + 1;
+    }
+
+    public static String byteToHex(final byte[] hash) {
+        Formatter formatter = new Formatter();
+        for (byte b : hash) {
+            formatter.format("%02x", b);
+        }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
     }
 }
