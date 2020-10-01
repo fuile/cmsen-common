@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cmsen.common</groupId>
     <artifactId>cmsen-common</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <name>cmsen-common</name>
     <description>Development common package for java project</description>
     <properties>

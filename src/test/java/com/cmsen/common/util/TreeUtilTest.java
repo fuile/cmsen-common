@@ -1,9 +1,12 @@
 package com.cmsen.common.util;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TreeUtilTest {
+    @Test
     public void tree() {
         List<MyEntity> trees = new ArrayList<>();
         trees.add(new MyEntity() {{
