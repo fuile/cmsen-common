@@ -50,6 +50,18 @@ public class FileUtil {
         return System.getProperty("user.dir");
     }
 
+    public static String getRunCurrentDirectory(Class<?> clazz) {
+        String path = clazz.getProtectionDomain().getCodeSource().getLocation().getPath();
+        if (System.getProperty("os.name").contains("Windows")) {
+            path = path.substring(1);
+        }
+        if (path.contains(".jar")) {
+            path = path.substring(0, path.lastIndexOf("."));
+            return path.substring(0, path.lastIndexOf("/"));
+        }
+        return path.replace("%20", " ").replace("target/classes/", "");
+    }
+
     public static String getMimeType(String filename) {
         String ext = getExtension(filename);
         String s = mime.get(getExtension(filename));
