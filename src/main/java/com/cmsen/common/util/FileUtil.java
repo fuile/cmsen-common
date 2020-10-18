@@ -54,8 +54,11 @@ public class FileUtil {
         String path = clazz.getProtectionDomain().getCodeSource().getLocation().getPath();
         if (System.getProperty("os.name").contains("Windows")) {
             path = path.replace("\\", "/")
-                    .replaceFirst("file:/", "")
-                    .replaceFirst("/", "");
+                    .replace("file:/", "");
+            if (path.substring(0, 1).equals("/")) {
+                path = path.replaceFirst("/", "");
+            }
+
         }
         if (path.contains(".jar")) {
             path = path.substring(0, path.lastIndexOf("."));

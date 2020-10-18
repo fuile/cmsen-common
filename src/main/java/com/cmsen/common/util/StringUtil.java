@@ -92,13 +92,37 @@ public class StringUtil {
         return new Random().nextInt(len) + 1;
     }
 
-    public static String byteToHex(final byte[] hash) {
+    /**
+     * 字节转十六进制
+     *
+     * @param bytes 字节
+     * @return HEX
+     */
+    public static String byteToHex(byte[] bytes) {
         Formatter formatter = new Formatter();
-        for (byte b : hash) {
+        for (byte b : bytes) {
             formatter.format("%02x", b);
         }
         String result = formatter.toString();
         formatter.close();
         return result;
+    }
+
+    /**
+     * 十六进制透明
+     *
+     * @param alpha 透明度 0.0~1.0
+     * @return HEX
+     */
+    public static String transparencyToHex(double alpha) {
+        if (alpha > 1 || alpha < 0) {
+            throw new IllegalArgumentException("The alpha parameter exceeds the range of 0.0 to 1.0");
+        }
+        double i = Math.round(alpha * 100) / 100.0d;
+        String hex = Integer.toHexString((int) Math.round(i * 255)).toUpperCase();
+        if (hex.length() == 1) {
+            hex = "0" + hex;
+        }
+        return hex;
     }
 }
