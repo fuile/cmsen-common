@@ -27,9 +27,9 @@ public interface ProcessingTransactional<T> {
         return execute(processingTransactional, message, 500);
     }
 
-    static <T> T execute(ProcessingTransactional<T> anInterface, String message, int code) {
+    static <T> T execute(ProcessingTransactional<T> processingTransactional, String message, int code) {
         try {
-            return anInterface.run();
+            return processingTransactional.run();
         } catch (ServiceException e) {
             throw new ServiceException(e);
         } catch (Exception e) {
