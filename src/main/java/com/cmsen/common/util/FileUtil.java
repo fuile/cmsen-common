@@ -58,13 +58,14 @@ public class FileUtil {
             if (path.substring(0, 1).equals("/")) {
                 path = path.replaceFirst("/", "");
             }
-
         }
         if (path.contains(".jar")) {
             path = path.substring(0, path.lastIndexOf("."));
             return path.substring(0, path.lastIndexOf("/"));
         }
-        return path.replace("%20", " ").replace("target/classes/", "");
+        return path.replace("%20", " ")
+                .replace("target/classes/", "")
+                .replace("//", "/");
     }
 
     public static String getMimeType(String filename) {
