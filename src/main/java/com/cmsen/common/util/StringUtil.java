@@ -11,6 +11,22 @@ import java.util.UUID;
  * @author jared.Yan (yanhuaiwen@163.com)
  */
 public class StringUtil {
+    public static boolean isBlank(CharSequence cs) {
+        int charLen = length(cs);
+        if (charLen != 0) {
+            for (int i = 0; i < charLen; i++) {
+                if (!Character.isWhitespace(cs.charAt(i))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNotBlank(CharSequence cs) {
+        return !isBlank(cs);
+    }
+
     public static boolean isNotEmptyChar(CharSequence cs) {
         return !isEmptyChar(cs);
     }
@@ -27,20 +43,8 @@ public class StringUtil {
         return cs == null || cs.length() == 0;
     }
 
-    public static boolean isNotBlank(CharSequence cs) {
-        return !isBlank(cs);
-    }
-
-    public static boolean isBlank(CharSequence cs) {
-        int len;
-        if (cs != null && (len = cs.length()) != 0) {
-            for (int i = 0; i < len; i++) {
-                if (Character.isWhitespace(cs.charAt(i))) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    public static int length(CharSequence cs) {
+        return cs == null ? 0 : cs.length();
     }
 
     public static boolean isNumeric(CharSequence cs) {
@@ -73,6 +77,18 @@ public class StringUtil {
             return letter.substring(0, 1).toUpperCase() + letter.substring(1);
         }
         return null;
+    }
+
+    public static String toUpperCase(String str) {
+        return str == null ? null : str.toUpperCase();
+    }
+
+    public static String toLowerCase(String str) {
+        return str == null ? null : str.toLowerCase();
+    }
+
+    public static String reverse(String str) {
+        return str == null ? null : (new StringBuilder(str)).reverse().toString();
     }
 
     public static String trim(String str) {
