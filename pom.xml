@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cmsen.common</groupId>
     <artifactId>cmsen-common</artifactId>
-    <version>1.0.3</version>
+    <version>2.0.0</version>
     <name>cmsen-common</name>
     <description>Development common package for java project</description>
     <properties>
@@ -30,17 +30,6 @@
             <name>GitHub fuile Apache Maven Packages</name>
             <url>${github.repo.url}</url>
         </repository>
-        <!--        <repository>-->
-        <!--            <id>sonatype</id>-->
-        <!--            <name>Nexus Release Repository</name>-->
-        <!--            <url>${release.repo.url}</url>-->
-        <!--        </repository>-->
-        <!--        <snapshotRepository>-->
-        <!--            <id>sonatype</id>-->
-        <!--            <name>Sonatype Nexus Snapshots</name>-->
-        <!--            <url>${snapshot.repo.url}</url>-->
-        <!--            <uniqueVersion>false</uniqueVersion>-->
-        <!--        </snapshotRepository>-->
     </distributionManagement>
     <dependencies>
         <dependency>
