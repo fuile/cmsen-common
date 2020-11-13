@@ -29,6 +29,14 @@ public class DateFormat {
         return new SimpleDateFormat(pattern, locale).format(date);
     }
 
+    public static String format(String pattern) {
+        return format(pattern, Locale.CHINESE);
+    }
+
+    public static String format(String pattern, Locale locale) {
+        return format(new Date(), pattern, locale);
+    }
+
     public static String format(Date date, String pattern) {
         return format(date, pattern, Locale.CHINESE);
     }

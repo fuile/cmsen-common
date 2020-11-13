@@ -1,13 +1,13 @@
 package com.cmsen.common.util;
 
-import org.junit.Test;
+import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TreeUtilTest {
-    @Test
-    public void tree() {
+public class TreeUtilTest extends TestCase {
+
+    public void test() {
         List<MyEntity> trees = new ArrayList<>();
         trees.add(new MyEntity() {{
             setLabel("一级 1");

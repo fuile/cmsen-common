@@ -1,15 +1,14 @@
 package com.cmsen.common.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.junit.Test;
+import junit.framework.TestCase;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class XmlUtilTest {
+public class XmlUtilTest extends TestCase {
 
-    @Test
-    public void xml() throws Exception {
+    public void test() throws Exception {
         String strXML = "<xml> \n" +
                 "  <ToUserName><![CDATA[touser]]></ToUserName>  \n" +
                 "  <FromUserName><![CDATA[fromuser]]></FromUserName>  \n" +
