@@ -206,9 +206,19 @@ public class FileUtil {
         if (!path.endsWith(separator)) {
             path = path + separator;
         }
-        System.err.println(path);
-        System.err.println(path);
         return new String[]{path + filename, path, filename};
+    }
+
+    public static String transformPath(String path) {
+        String regex = "([\\|/]+)";
+        String separator = File.separator;
+        path = path.replaceAll(regex, separator.replace("\\", "\\\\"));
+
+        // 判断是否已分割符结尾，如果没有测自动补充
+        if (!path.endsWith(separator)) {
+            path = path + separator;
+        }
+        return path;
     }
 
     /**
