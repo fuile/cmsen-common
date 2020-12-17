@@ -1,9 +1,15 @@
 package com.cmsen.common.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Formatter;
 import java.util.Random;
 import java.util.UUID;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * 字符串工具类
@@ -140,5 +146,42 @@ public class StringUtil {
             hex = "0" + hex;
         }
         return hex;
+    }
+
+    public static String compress(byte[] str) throws IOException {
+        if (str.length == 0) {
+            return null;
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        GZIPOutputStream gzip = new GZIPOutputStream(out);
+        gzip.write(str);
+        gzip.close();
+        return out.toString(StandardCharsets.ISO_8859_1.toString());
+    }
+
+    public static String compress(String str) throws IOException {
+        if (str == null) {
+            return null;
+        }
+        return compress(str.getBytes());
+    }
+
+    public static String unCompress(String str) {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+             ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes(StandardCharsets.ISO_8859_1));
+             GZIPInputStream gzip = new GZIPInputStream(in)) {
+            int offset = 1024;
+            byte[] buffer = new byte[offset];
+            while ((offset = gzip.read(buffer)) != -1) {
+                out.write(buffer, 0, offset);
+            }
+            return out.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
