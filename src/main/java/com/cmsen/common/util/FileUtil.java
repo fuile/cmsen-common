@@ -145,9 +145,16 @@ public class FileUtil {
      * @return 扩展名
      */
     public static String getExtension(String filename) {
+        return getExtension(filename, false);
+    }
+
+    public static String getExtension(String filename, boolean symbol) {
         int i = (null == filename ? "" : filename).lastIndexOf(".");
         if (i == -1) {
             return "";
+        }
+        if (symbol) {
+            i = i + 1;
         }
         return filename.substring(i);
     }
