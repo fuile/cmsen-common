@@ -7,38 +7,18 @@
  */
 package com.cmsen.common.util;
 
-import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
  * @author jared.Yan (yanhuaiwen@163.com)
  */
 public class FileUtil {
-    private static final Map<String, String> mime = new HashMap<>();
-
-    static {
-        mime.put(".jpeg", "image/jpeg");
-        mime.put(".jpg", "image/jpeg");
-        mime.put(".png", "image/png");
-        mime.put(".gif", "image/gif");
-        mime.put(".pdf", "application/pdf");
-        mime.put(".json", "application/json");
-        mime.put(".doc", "application/msword");
-        mime.put(".xls", "application/vnd.ms-excel");
-        mime.put(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-        mime.put(".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-    }
-
-    public static void setMime(String type, String value) {
-        mime.put(type, value);
-    }
-
     /**
      * 系统临时文件路径
      */
@@ -68,13 +48,15 @@ public class FileUtil {
                 .replace("//", "/");
     }
 
+    /**
+     * 获取Mime类型
+     *
+     * @param filename 文件路径或后缀
+     * @return MimeType
+     */
+    @Deprecated
     public static String getMimeType(String filename) {
-        String ext = getExtension(filename);
-        String s = mime.get(getExtension(filename));
-        if (null == s) {
-            return new MimetypesFileTypeMap().getContentType(filename);
-        }
-        return "";
+        return FileMime.get(filename, FileMime.STREAM);
     }
 
     /**
@@ -83,6 +65,7 @@ public class FileUtil {
      * @param file File对象
      * @return MimeType
      */
+    @Deprecated
     public static String getMimeType(File file) {
         return getMimeType(file.getName());
     }
@@ -200,29 +183,17 @@ public class FileUtil {
     /**
      * 路径地址修正
      *
-     * @param path     路径
-     * @param filename 文件名
+     * @param path 路径
      * @return string
      */
-    public static String[] transformPath(String path, String filename) {
-        String regex = "([\\|/]+)";
-        String separator = File.separator;
-        path = path.replaceAll(regex, separator.replace("\\", "\\\\"));
-
-        // 判断是否已分割符结尾，如果没有测自动补充
-        if (!path.endsWith(separator)) {
-            path = path + separator;
-        }
-        return new String[]{path + filename, path, filename};
+    public static String transformPath(String path) {
+        return transformPath(path, File.separator);
     }
 
-    public static String transformPath(String path) {
-        String regex = "([\\|/]+)";
-        String separator = File.separator;
-        path = path.replaceAll(regex, separator.replace("\\", "\\\\"));
-
+    public static String transformPath(String path, String separator) {
+        path = path.replaceAll("([\\|/]+)", File.separator.replace("\\", "\\\\"));
         // 判断是否已分割符结尾，如果没有测自动补充
-        if (!path.endsWith(separator)) {
+        if (separator != null && !path.endsWith(File.separator)) {
             path = path + separator;
         }
         return path;
@@ -337,6 +308,14 @@ public class FileUtil {
         return false;
     }
 
+    public static String repeatString(String str, int n) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            sb.append(str);
+        }
+        return sb.substring(0, sb.length());
+    }
+
     public static final Kind<Path> WATCH_CREATE = StandardWatchEventKinds.ENTRY_CREATE;
     public static final Kind<Path> WATCH_MODIFY = StandardWatchEventKinds.ENTRY_MODIFY;
     public static final Kind<Path> WATCH_DELETE = StandardWatchEventKinds.ENTRY_DELETE;
@@ -373,5 +352,34 @@ public class FileUtil {
                 return true;
             }
         }
+    }
+
+    public static List<String> scanFile(String folderPath) {
+        return scanFile(new File(folderPath), new ArrayList<>());
+    }
+
+    public static List<String> scanFile(File folderPath) {
+        return scanFile(folderPath, new ArrayList<>());
+    }
+
+    public static List<String> scanFile(String folderPath, List<String> scanFiles) {
+        return scanFile(new File(folderPath), scanFiles);
+    }
+
+    public static List<String> scanFile(File folderPath, List<String> scanFiles) {
+        if (folderPath.isDirectory()) {
+            File[] files = folderPath.listFiles();
+            if (files != null) {
+                for (File file1 : files) {
+                    if (folderPath.isDirectory()) {
+                        scanFiles.add(file1.getAbsolutePath());
+                        scanFile(file1.getAbsolutePath(), scanFiles);
+                    } else {
+                        scanFiles.add(file1.getAbsolutePath());
+                    }
+                }
+            }
+        }
+        return scanFiles;
     }
 }

@@ -7,6 +7,8 @@
  */
 package com.cmsen.common.util;
 
+import java.io.File;
+
 public enum FileMime {
     STREAM("application/octet-stream"),
     EZ("ez", "application/andrew-inset"),
@@ -1035,6 +1037,18 @@ public enum FileMime {
 
     public static String get(String filename, FileMime defaultMimeType) {
         return get(filename, defaultMimeType.getMimeType());
+    }
+
+    public static String get(File file) {
+        return get(file.getName(), "");
+    }
+
+    public static String get(File file, String defaultMimeType) {
+        return get(file.getName(), defaultMimeType);
+    }
+
+    public static String get(File file, FileMime defaultMimeType) {
+        return get(file.getName(), defaultMimeType);
     }
 
     public static boolean has(String filename) {
