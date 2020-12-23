@@ -209,12 +209,16 @@ public class FileUtil {
         return getBytes(file, 1024);
     }
 
+    public static InputStream getResourceAsStream(String path) {
+        return FileUtil.class.getClassLoader().getResourceAsStream(path);
+    }
+
     public static String getResource(String path) {
         String buffer = null;
         InputStream resourceAsStream = null;
         ByteArrayOutputStream outputStream = null;
         try {
-            resourceAsStream = FileUtil.class.getClassLoader().getResourceAsStream(path);
+            resourceAsStream = getResourceAsStream(path);
             if (null != resourceAsStream) {
                 outputStream = new ByteArrayOutputStream(1024);
                 byte[] bytes = new byte[1024];

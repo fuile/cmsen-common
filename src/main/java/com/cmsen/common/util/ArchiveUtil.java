@@ -168,8 +168,9 @@ public class ArchiveUtil {
             ZipEntry entry = zipFile.getEntry(FileUtil.transformPath(name, null));
             if (entry != null) {
                 InputStream inputStream = zipFile.getInputStream(entry);
+                byte[] bytes = FileUtil.getBytes(inputStream, 1024);
                 zipFile.close();
-                return FileUtil.getBytes(inputStream, 1024);
+                return bytes;
             }
         } catch (IOException e) {
             e.printStackTrace();
