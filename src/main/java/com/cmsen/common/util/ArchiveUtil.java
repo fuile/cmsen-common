@@ -165,7 +165,7 @@ public class ArchiveUtil {
     public static byte[] readFile(File destZipFile, String name, Charset charset) {
         try {
             ZipFile zipFile = new ZipFile(destZipFile, ZipFile.OPEN_READ, charset);
-            ZipEntry entry = zipFile.getEntry(FileUtil.transformPath(name, null));
+            ZipEntry entry = zipFile.getEntry(name);
             if (entry != null) {
                 InputStream inputStream = zipFile.getInputStream(entry);
                 byte[] bytes = FileUtil.getBytes(inputStream, 1024);
