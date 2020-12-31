@@ -9,5 +9,5 @@ package com.cmsen.common.lang;
 
 import java.util.LinkedHashMap;
 
-public class JsonObject extends LinkedHashMap<Object, Object> {
+public class JsonObject<K, V> extends LinkedHashMap<K, V> {
 }

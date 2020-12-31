@@ -9,5 +9,5 @@ package com.cmsen.common.lang;
 
 import java.util.ArrayList;
 
-public class JsonArray extends ArrayList<Object> {
+public class JsonArray<T> extends ArrayList<T> {
 }

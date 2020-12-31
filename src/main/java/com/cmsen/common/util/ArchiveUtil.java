@@ -10,6 +10,7 @@ package com.cmsen.common.util;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -163,19 +164,58 @@ public class ArchiveUtil {
     }
 
     public static byte[] readFile(File destZipFile, String name, Charset charset) {
+
+        InputStream inputStream = readFileInputStream(destZipFile, name, charset);
+        if (inputStream != null) {
+            return FileUtil.getBytes(inputStream, 1024);
+        }
+        return null;
+    }
+
+    public static InputStream readFileInputStream(String destZipFile, String name) {
+        return readFileInputStream(new File(destZipFile), name);
+    }
+
+    public static InputStream readFileInputStream(File destZipFile, String name) {
+        return readFileInputStream(destZipFile, name, StandardCharsets.UTF_8);
+    }
+
+    public static InputStream readFileInputStream(File destZipFile, String name, Charset charset) {
         try {
             ZipFile zipFile = new ZipFile(destZipFile, ZipFile.OPEN_READ, charset);
             ZipEntry entry = zipFile.getEntry(name);
             if (entry != null) {
-                InputStream inputStream = zipFile.getInputStream(entry);
-                byte[] bytes = FileUtil.getBytes(inputStream, 1024);
-                zipFile.close();
-                return bytes;
+                return zipFile.getInputStream(entry);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static List<String> readFileLists(String destZipFile) {
+        return readFileLists(new File(destZipFile), StandardCharsets.UTF_8);
+    }
+
+    public static List<String> readFileLists(File destZipFile) {
+        return readFileLists(destZipFile, StandardCharsets.UTF_8);
+    }
+
+    public static List<String> readFileLists(String destZipFile, Charset charset) {
+        return readFileLists(new File(destZipFile), charset);
+    }
+
+    public static List<String> readFileLists(File destZipFile, Charset charset) {
+        List<String> lists = new ArrayList<>();
+        try (ZipFile zipFile = new ZipFile(destZipFile, ZipFile.OPEN_READ, charset)) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                lists.add(entries.nextElement().getName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lists;
     }
 
     public static String getComment(String destZipFile) {
