@@ -3,6 +3,7 @@ package com.cmsen.common.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Formatter;
@@ -183,5 +184,65 @@ public class StringUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 字符转码
+     *
+     * @param
+     * @return
+     */
+    public static String transcoding(String str) {
+        try {
+            return new String(str.getBytes(getCharsetName(str)), Charset.defaultCharset());
+        } catch (Exception e) {
+        }
+        return str;
+    }
+
+    public static String transcoding(String str, String defCharsetName) {
+        try {
+            return new String(str.getBytes(defCharsetName), Charset.defaultCharset());
+        } catch (Exception e) {
+        }
+        return str;
+    }
+
+    public static String transcoding(String str, String defCharsetName, String targetCharsetName) {
+        try {
+            return new String(str.getBytes(defCharsetName), targetCharsetName);
+        } catch (Exception e) {
+        }
+        return str;
+    }
+
+    /**
+     * 获取字符集名称
+     *
+     * @param
+     * @return
+     */
+    public static String getCharsetName(String str) {
+        String[] charEncode = {"UTF-8", "GBK", "GB2312", "BIG5", "GB18030", "UTF-16", "UTF-16LE", "UTF-16BE", "UTF-32"};
+        String charsetStr = Charset.defaultCharset().name();
+        for (String charsetName : charEncode) {
+            try {
+                if (str.equals(new String(str.getBytes(charsetName), charsetName))) {
+                    System.out.println(1);
+                    return charsetName;
+                }
+            } catch (Exception e) {
+            }
+        }
+        for (Charset charset : Charset.availableCharsets().values()) {
+            try {
+                if (str.equals(new String(str.getBytes(charset.name()), charset.name()))) {
+                    System.out.println(2);
+                    return charset.name();
+                }
+            } catch (Exception e) {
+            }
+        }
+        return charsetStr;
     }
 }
