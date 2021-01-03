@@ -212,8 +212,8 @@ public class StringUtil {
     /**
      * 获取字符集名称
      *
-     * @param
-     * @return
+     * @param str 字符
+     * @return String
      */
     public static String getCharsetName(String str) {
         String[] charEncode = {"UTF-8", "GBK", "GB2312", "BIG5", "GB18030", "UTF-16", "UTF-16LE", "UTF-16BE", "UTF-32"};
