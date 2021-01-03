@@ -221,7 +221,6 @@ public class StringUtil {
         for (String charsetName : charEncode) {
             try {
                 if (str.equals(new String(str.getBytes(charsetName), charsetName))) {
-                    System.out.println(1);
                     return charsetName;
                 }
             } catch (Exception e) {
@@ -230,7 +229,6 @@ public class StringUtil {
         for (Charset charset : Charset.availableCharsets().values()) {
             try {
                 if (str.equals(new String(str.getBytes(charset.name()), charset.name()))) {
-                    System.out.println(2);
                     return charset.name();
                 }
             } catch (Exception e) {
