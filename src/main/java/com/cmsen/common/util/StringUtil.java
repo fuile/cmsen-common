@@ -193,12 +193,12 @@ public class StringUtil {
      * @return String
      */
     public static String transcoding(String str) {
-        return transcoding(str, getCharsetName(str));
+        return transcoding(str, Charset.defaultCharset().name());
     }
 
-    public static String transcoding(String str, String defCharsetName) {
+    public static String transcoding(String str, String targetCharsetName) {
 
-        return transcoding(str, defCharsetName, Charset.defaultCharset().name());
+        return transcoding(str, getCharsetName(str), targetCharsetName);
     }
 
     public static String transcoding(String str, String defCharsetName, String targetCharsetName) {
