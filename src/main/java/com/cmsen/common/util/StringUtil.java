@@ -189,23 +189,16 @@ public class StringUtil {
     /**
      * 字符转码
      *
-     * @param
-     * @return
+     * @param str 字符
+     * @return String
      */
     public static String transcoding(String str) {
-        try {
-            return new String(str.getBytes(getCharsetName(str)), Charset.defaultCharset());
-        } catch (Exception e) {
-        }
-        return str;
+        return transcoding(str, getCharsetName(str));
     }
 
     public static String transcoding(String str, String defCharsetName) {
-        try {
-            return new String(str.getBytes(defCharsetName), Charset.defaultCharset());
-        } catch (Exception e) {
-        }
-        return str;
+
+        return transcoding(str, defCharsetName, Charset.defaultCharset().name());
     }
 
     public static String transcoding(String str, String defCharsetName, String targetCharsetName) {
