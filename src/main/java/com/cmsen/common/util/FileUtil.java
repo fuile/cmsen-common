@@ -14,6 +14,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Matcher;
 
 /**
  * @author jared.Yan (yanhuaiwen@163.com)
@@ -113,7 +114,7 @@ public class FileUtil {
         if (filename == null) {
             return "";
         }
-        filename = filename.replace("/", File.separator);
+        filename = filename.replaceAll("[\\/|\\\\]+", Matcher.quoteReplacement(File.separator));
         int i = filename.lastIndexOf(File.separator);
         if (i == -1) {
             return "";
@@ -191,9 +192,9 @@ public class FileUtil {
     }
 
     public static String transformPath(String path, String separator) {
-        path = path.replaceAll("([\\|/]+)", File.separator.replace("\\", "\\\\"));
         // 判断是否已分割符结尾，如果没有测自动补充
-        if (separator != null && !path.endsWith(File.separator)) {
+        path = path.replaceAll("[\\/|\\\\]+", Matcher.quoteReplacement(separator));
+        if (path.lastIndexOf(separator) == -1) {
             path = path + separator;
         }
         return path;
