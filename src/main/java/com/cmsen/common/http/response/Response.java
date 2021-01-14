@@ -1,8 +1,6 @@
 package com.cmsen.common.http.response;
 
 
-import com.cmsen.common.http.pagination.Pagination;
-
 /**
  * 包装REST响应
  *
@@ -163,7 +161,7 @@ public class Response implements RestResponse {
         public Page(T result, Pagination page, ResponseStatus responseCode) {
             this(result, page, responseCode.getMessage(), responseCode.getStatus());
         }
-        
+
         public Page(T result, Pagination page, String message, int status) {
             this.result = result;
             this.page = page;

@@ -1,7 +1,5 @@
 package com.cmsen.common.http.response;
 
-import com.cmsen.common.http.pagination.Pagination;
-
 /**
  * 包装REST请求响应
  *
