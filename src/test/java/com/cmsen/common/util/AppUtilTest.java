@@ -8,5 +8,7 @@ public class AppUtilTest extends TestCase {
         String id = AppUtil.id(secret);
         assertEquals(id, "924606434");
         assertEquals(secret, "66a22150b5b613469202a561db8eb63bc9d1c0e1");
+        // 验证id和secret是否有效
+        assertTrue(AppUtil.valid(id, secret));
     }
 }

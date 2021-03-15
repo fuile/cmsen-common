@@ -54,4 +54,8 @@ public class AppUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean valid(String id, String secret) {
+        return id(secret).equals(id);
+    }
 }
