@@ -69,7 +69,9 @@ public class ClientHttpConnect {
             httpResponse.setStatus(responseCode);
             httpResponse.setMessage(connection.getResponseMessage());
             httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
-            httpResponse.setBody(getResponseBody(inputStream));
+            if (httpRequest.getPrintOutputStream().print(inputStream, httpResponse)) {
+                httpResponse.setBody(getResponseBody(inputStream));
+            }
             connection.disconnect();
         } catch (Exception e) {
             System.err.println("ClientHttpConnect: " + e.getMessage());
@@ -122,7 +124,9 @@ public class ClientHttpConnect {
             httpResponse.setStatus(responseCode);
             httpResponse.setMessage(connection.getResponseMessage());
             httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
-            httpResponse.setBody(getResponseBody(inputStream));
+            if (httpRequest.getPrintOutputStream().print(inputStream, httpResponse)) {
+                httpResponse.setBody(getResponseBody(inputStream));
+            }
             connection.disconnect();
         } catch (Exception e) {
             System.err.println("ClientHttpsConnect: " + e.getMessage());

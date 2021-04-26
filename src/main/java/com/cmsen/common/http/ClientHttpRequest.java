@@ -34,6 +34,8 @@ public class ClientHttpRequest {
     private Map<String, String> headers;
     private Map<String, Object> paramsMap;
 
+    private ResponsePrintOutputStream printOutputStream;
+
     public ClientHttpRequest() {
     }
 
@@ -233,6 +235,14 @@ public class ClientHttpRequest {
     public ClientHttpRequest setFollowRedirect(boolean followRedirect) {
         this.followRedirect = followRedirect;
         return this;
+    }
+
+    public ResponsePrintOutputStream getPrintOutputStream() {
+        return printOutputStream;
+    }
+
+    public void setPrintOutputStream(ResponsePrintOutputStream printOutputStream) {
+        this.printOutputStream = printOutputStream;
     }
 
     @Override
