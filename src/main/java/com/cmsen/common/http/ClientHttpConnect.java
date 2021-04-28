@@ -7,6 +7,8 @@
  */
 package com.cmsen.common.http;
 
+import com.cmsen.common.util.FileUtil;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -15,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author jared.Yan (yanhuaiwen@163.com)
@@ -47,7 +50,9 @@ public class ClientHttpConnect {
             setRequestHeaders(connection, httpRequest);
             connection.connect();
             if (!httpRequest.getMethod().equals("GET")) {
-                if (httpRequest.isParamsXorStream()) {
+                if (httpRequest.isStreamBinary()) {
+                    formData(connection, httpRequest);
+                } else if (httpRequest.isParamsXorStream()) {
                     OutputStream os = connection.getOutputStream();
                     if (null != httpRequest.getParams()) {
                         byte[] params = httpRequest.getParams(StandardCharsets.UTF_8);
@@ -106,7 +111,9 @@ public class ClientHttpConnect {
             setRequestHeaders(connection, httpRequest);
             connection.connect();
             if (!httpRequest.getMethod().equals("GET")) {
-                if (httpRequest.isParamsXorStream()) {
+                if (httpRequest.isStreamBinary()) {
+                    formData(connection, httpRequest);
+                } else if (httpRequest.isParamsXorStream()) {
                     OutputStream os = connection.getOutputStream();
                     if (null != httpRequest.getParams()) {
                         byte[] params = httpRequest.getParams(StandardCharsets.UTF_8);
@@ -192,5 +199,27 @@ public class ClientHttpConnect {
         if (null != httpRequest.getCookies()) {
             connection.setRequestProperty("Cookie", httpRequest.getCookie());
         }
+    }
+
+    protected static void formData(URLConnection connection, ClientHttpRequest httpRequest) throws IOException {
+        String boundary = UUID.randomUUID().toString();
+        connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
+        for (ClientRequestFormData streamBinary : httpRequest.getStreamBinary()) {
+            dos.writeBytes("--" + boundary + "\r\n");
+            dos.writeBytes("Content-Disposition: form-data; name=\"" + streamBinary.getName() + "\"; filename=\"" + streamBinary.getFilename() + "\"\r\n");
+            dos.writeBytes("Content-Type:" + streamBinary.getFileType() + "\r\n");
+            dos.writeBytes("\r\n");
+            if (streamBinary.getStream() instanceof String) {
+                dos.write(FileUtil.getBytes(new File(streamBinary.getStreamString())));
+            } else if (streamBinary.getStream() instanceof File) {
+                dos.write(FileUtil.getBytes(streamBinary.getStreamFile()));
+            } else if (streamBinary.getStream() instanceof byte[]) {
+                dos.write(streamBinary.getStreamBytes());
+            }
+            dos.writeBytes("\r\n");
+        }
+        dos.writeBytes("------" + boundary + "--");
+        dos.flush();
     }
 }

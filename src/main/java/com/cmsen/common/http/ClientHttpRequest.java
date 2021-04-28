@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +32,7 @@ public class ClientHttpRequest {
     private String method = "GET";
     private String params;
     private byte[] stream;
+    private List<ClientRequestFormData> streamBinary = new ArrayList<>();
     private Map<String, String> cookies;
     private Map<String, String> headers;
     private Map<String, Object> paramsMap;
@@ -159,6 +162,24 @@ public class ClientHttpRequest {
 
     public boolean isParamsXorStream() {
         return (null != paramsMap || null != params) || null != stream;
+    }
+
+    public List<ClientRequestFormData> getStreamBinary() {
+        return streamBinary;
+    }
+
+    public void setStreamBinary(ClientRequestFormData name) {
+        this.streamBinary.add(name);
+    }
+
+    public boolean isStreamBinary() {
+        return this.streamBinary.size() > 0;
+    }
+
+    public void clearStreamBinary() {
+        if (isStreamBinary()) {
+            this.streamBinary.clear();
+        }
     }
 
     public String getCookie() {
