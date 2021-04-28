@@ -9,6 +9,7 @@ package com.cmsen.common.http;
 
 import com.cmsen.common.util.UrlUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -166,6 +167,18 @@ public class ClientHttpRequest {
 
     public List<ClientRequestFormData> getStreamBinary() {
         return streamBinary;
+    }
+
+    public void setStreamBinary(String name, String filename, String fileType, File stream) {
+        this.streamBinary.add(new ClientRequestFormData(name, filename, fileType, stream));
+    }
+
+    public void setStreamBinary(String name, String filename, String fileType, byte[] stream) {
+        this.streamBinary.add(new ClientRequestFormData(name, filename, fileType, stream));
+    }
+
+    public void setStreamBinary(String name, String filename, String fileType, String stream) {
+        this.streamBinary.add(new ClientRequestFormData(name, filename, fileType, stream));
     }
 
     public void setStreamBinary(ClientRequestFormData name) {
