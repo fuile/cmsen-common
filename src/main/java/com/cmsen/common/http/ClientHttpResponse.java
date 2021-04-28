@@ -126,6 +126,10 @@ public class ClientHttpResponse {
         return this.status == 200;
     }
 
+    public boolean isSuccess(int status) {
+        return this.status == status;
+    }
+
     /**
      * 判断请求响应是否是301、302重定向
      */
