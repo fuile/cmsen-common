@@ -69,7 +69,11 @@ public class ClientHttpConnect {
             httpResponse.setStatus(responseCode);
             httpResponse.setMessage(connection.getResponseMessage());
             httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
-            if (httpRequest.getPrintOutputStream().print(inputStream, httpResponse)) {
+            boolean print = true;
+            if (httpRequest.getPrintOutputStream() != null) {
+                print = httpRequest.getPrintOutputStream().print(inputStream, httpResponse);
+            }
+            if (print) {
                 httpResponse.setBody(getResponseBody(inputStream));
             }
             connection.disconnect();
@@ -124,7 +128,11 @@ public class ClientHttpConnect {
             httpResponse.setStatus(responseCode);
             httpResponse.setMessage(connection.getResponseMessage());
             httpResponse.setHeaders(getResponseHeader(httpResponse, connection));
-            if (httpRequest.getPrintOutputStream().print(inputStream, httpResponse)) {
+            boolean print = true;
+            if (httpRequest.getPrintOutputStream() != null) {
+                print = httpRequest.getPrintOutputStream().print(inputStream, httpResponse);
+            }
+            if (print) {
                 httpResponse.setBody(getResponseBody(inputStream));
             }
             connection.disconnect();
