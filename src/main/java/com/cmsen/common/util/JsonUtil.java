@@ -14,6 +14,7 @@ import java.util.Map;
  *
  * @author jared.Yan (yanhuaiwen@163.com)
  */
+@Deprecated
 public class JsonUtil {
     public static Map<?, ?> toObject(String string) {
         return toClass(string, Map.class);
