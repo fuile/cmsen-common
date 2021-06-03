@@ -14,10 +14,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author jared.Yan (yanhuaiwen@163.com)
@@ -34,6 +31,7 @@ public class ClientHttpRequest {
     private String params;
     private byte[] stream;
     private List<ClientRequestFormData> streamBinary = new ArrayList<>();
+    private String boundaryName;
     private Map<String, String> cookies;
     private Map<String, String> headers;
     private Map<String, Object> paramsMap;
@@ -41,14 +39,19 @@ public class ClientHttpRequest {
     private ResponsePrintOutputStream printOutputStream;
 
     public ClientHttpRequest() {
+        this.boundaryName = UUID.randomUUID().toString();
     }
 
     public ClientHttpRequest(String url) {
+        this();
         setUrl(url);
     }
 
     public ClientHttpRequest(String url, String params, Map<String, String> headers) {
-        setUrl(url).setParams(params).setHeaders(headers);
+        this();
+        setUrl(url);
+        setParams(params);
+        setHeaders(headers);
     }
 
     public ClientHttpRequest(String host, String path) {
@@ -193,6 +196,14 @@ public class ClientHttpRequest {
         if (isStreamBinary()) {
             this.streamBinary.clear();
         }
+    }
+
+    public String getBoundaryName() {
+        return boundaryName;
+    }
+
+    public void setBoundaryName(String boundaryName) {
+        this.boundaryName = boundaryName;
     }
 
     public String getCookie() {

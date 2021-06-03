@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author jared.Yan (yanhuaiwen@163.com)
@@ -42,7 +41,7 @@ public class ClientHttpConnect {
             connection = (HttpURLConnection) httpRequest.openConnection().openConnection();
             connection.setRequestMethod(httpRequest.getMethod());
             connection.setDoInput(true);
-            connection.setDoOutput(httpRequest.isParamsXorStream());
+            connection.setDoOutput(httpRequest.isParamsXorStream() || httpRequest.isStreamBinary());
             connection.setUseCaches(false);
             connection.setConnectTimeout(httpRequest.getTimeOut());
             connection.setReadTimeout(httpRequest.getTimeOut());
@@ -103,7 +102,7 @@ public class ClientHttpConnect {
             connection.setSSLSocketFactory(ClientHttpCertificate.sslContext().getSocketFactory());
             connection.setRequestMethod(httpRequest.getMethod());
             connection.setDoInput(true);
-            connection.setDoOutput(true);
+            connection.setDoOutput(httpRequest.isParamsXorStream() || httpRequest.isStreamBinary());
             connection.setUseCaches(false);
             connection.setConnectTimeout(httpRequest.getTimeOut());
             connection.setReadTimeout(httpRequest.getTimeOut());
@@ -189,7 +188,11 @@ public class ClientHttpConnect {
             connection.setRequestProperty("Content-Length", String.valueOf(httpRequest.getStream().length));
         }
         if (httpRequest.getMethod().equals("POST")) {
-            connection.setRequestProperty("Content-Type", ContentEnctype.URLENCODED);
+            if (httpRequest.isStreamBinary()) {
+                connection.setRequestProperty("Content-Type", ContentEnctype.DATA + "; boundary=" + httpRequest.getBoundaryName());
+            } else {
+                connection.setRequestProperty("Content-Type", ContentEnctype.URLENCODED);
+            }
         }
         if (null != httpRequest.getHeaders()) {
             for (Map.Entry<String, String> entry : httpRequest.getHeaders().entrySet()) {
@@ -202,13 +205,12 @@ public class ClientHttpConnect {
     }
 
     protected static void formData(URLConnection connection, ClientHttpRequest httpRequest) throws IOException {
-        String boundary = UUID.randomUUID().toString();
-        connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
         for (ClientRequestFormData streamBinary : httpRequest.getStreamBinary()) {
-            dos.writeBytes("--" + boundary + "\r\n");
+            dos.writeBytes("----" + httpRequest.getBoundaryName() + "\r\n");
             dos.writeBytes("Content-Disposition: form-data; name=\"" + streamBinary.getName() + "\"; filename=\"" + streamBinary.getFilename() + "\"\r\n");
-            dos.writeBytes("Content-Type:" + streamBinary.getFileType() + "\r\n");
+            dos.writeBytes("Content-Type:" + streamBinary.getFileType());
+            dos.writeBytes("\r\n");
             dos.writeBytes("\r\n");
             if (streamBinary.getStream() instanceof String) {
                 dos.write(FileUtil.getBytes(new File(streamBinary.getStreamString())));
@@ -217,9 +219,13 @@ public class ClientHttpConnect {
             } else if (streamBinary.getStream() instanceof byte[]) {
                 dos.write(streamBinary.getStreamBytes());
             }
-            dos.writeBytes("\r\n");
         }
-        dos.writeBytes("------" + boundary + "--");
+        dos.writeBytes("\r\n");
+        dos.writeBytes("----" + httpRequest.getBoundaryName() + "--");
+        dos.writeBytes("\r\n");
         dos.flush();
+        dos.close();
+        // os.flush();
+        // os.close();
     }
 }

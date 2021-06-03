@@ -10,10 +10,10 @@ package com.cmsen.common.http;
 import java.io.File;
 
 public class ClientRequestFormData {
-    String name;
-    String filename;
-    String fileType;
-    Object stream;
+    private String name;
+    private String filename;
+    private String fileType;
+    private Object stream;
 
     public ClientRequestFormData() {
     }
