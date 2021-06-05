@@ -155,6 +155,10 @@ public class ClientHttpResponse {
         return getForObject(false, null);
     }
 
+    public <T> T getForObject(T def) {
+        return getForObject(false, def);
+    }
+
     public <T> T getForObject(boolean nonNull) {
         return getForObject(nonNull, null);
     }
@@ -174,6 +178,10 @@ public class ClientHttpResponse {
 
     public <T> T getForObject(Class<T> valueType) {
         return getForObject(valueType, false, null);
+    }
+
+    public <T> T getForObject(Class<T> valueType, T def) {
+        return getForObject(valueType, false, def);
     }
 
     public <T> T getForObject(Class<T> valueType, boolean nonNull) {
