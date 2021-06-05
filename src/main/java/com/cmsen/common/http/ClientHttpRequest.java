@@ -120,6 +120,14 @@ public class ClientHttpRequest {
         return this;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public boolean isPathEmpty() {
+        return path == null || "".equals(path);
+    }
+
     public String getMethod() {
         return method;
     }
@@ -139,6 +147,11 @@ public class ClientHttpRequest {
 
     public ClientHttpRequest setParams(String params) {
         this.params = params;
+        return this;
+    }
+
+    public ClientHttpRequest clearParams() {
+        this.paramsMap = new HashMap<>();
         return this;
     }
 
