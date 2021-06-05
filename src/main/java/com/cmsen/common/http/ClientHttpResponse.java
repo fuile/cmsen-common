@@ -7,6 +7,14 @@
  */
 package com.cmsen.common.http;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,15 +35,21 @@ public class ClientHttpResponse {
     private Map<String, String> headers = new HashMap<>();
     private List<String> cookies = new ArrayList<>();
     private StringBuilder body;
+    private ObjectMapper mapper = new ObjectMapper();
 
     public ClientHttpResponse() {
+        mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
     public ClientHttpResponse(int status) {
+        this();
         this.status = status;
     }
 
     public ClientHttpResponse(String message, int status) {
+        this();
         this.status = status;
         this.message = message;
     }
@@ -135,6 +149,47 @@ public class ClientHttpResponse {
      */
     public boolean isRedirect() {
         return this.status == 301 || this.status == 302;
+    }
+
+    public <T> T getForObject() {
+        return getForObject(false, null);
+    }
+
+    public <T> T getForObject(boolean nonNull) {
+        return getForObject(nonNull, null);
+    }
+
+    public <T> T getForObject(boolean nonNull, T def) {
+        try {
+            if (nonNull) {
+                mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            }
+            return mapper.readValue(toString(), new TypeReference<T>() {
+            });
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return def;
+    }
+
+    public <T> T getForObject(Class<T> valueType) {
+        return getForObject(valueType, false, null);
+    }
+
+    public <T> T getForObject(Class<T> valueType, boolean nonNull) {
+        return getForObject(valueType, nonNull, null);
+    }
+
+    public <T> T getForObject(Class<T> valueType, boolean nonNull, T def) {
+        try {
+            if (nonNull) {
+                mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            }
+            return mapper.readValue(toString(), valueType);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return def;
     }
 
     @Override
