@@ -5,7 +5,7 @@ package com.cmsen.common.http.response;
  *
  * @author jared.Yan (yanhuaiwen@163.com)
  */
-public enum ResponseStatus {
+public enum RestResponseStatus {
     SUCCESS(200, "SUCCESS"),
 
     FAILURE(500, "FAILURE"),
@@ -27,7 +27,7 @@ public enum ResponseStatus {
     private int status;
     private String message;
 
-    ResponseStatus(int status, String message) {
+    RestResponseStatus(int status, String message) {
         this.status = status;
         this.message = message;
     }

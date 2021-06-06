@@ -8,7 +8,7 @@ package com.cmsen.common.http.response;
 public interface RestResponse {
 
     static RestResponse success() {
-        return new Response(ResponseStatus.SUCCESS);
+        return new Response(RestResponseStatus.SUCCESS);
     }
 
     static <T> RestResponse success(T result) {
@@ -27,7 +27,7 @@ public interface RestResponse {
         return new Response.Success<>(result, message, status);
     }
 
-    static <T> RestResponse success(T result, ResponseStatus responseStatus) {
+    static <T> RestResponse success(T result, RestResponseStatus responseStatus) {
         return new Response.Success<>(result, responseStatus);
     }
 
@@ -43,7 +43,7 @@ public interface RestResponse {
         return new Response.Page<>(result, page, message);
     }
 
-    static <T> RestResponse success(T result, Pagination page, ResponseStatus responseStatus) {
+    static <T> RestResponse success(T result, Pagination page, RestResponseStatus responseStatus) {
         return new Response.Page<>(result, page, responseStatus);
     }
 
@@ -67,7 +67,7 @@ public interface RestResponse {
         return new Response(message, status);
     }
 
-    static RestResponse failure(ResponseStatus responseStatus) {
+    static RestResponse failure(RestResponseStatus responseStatus) {
         return new Response(responseStatus);
     }
 }

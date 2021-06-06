@@ -29,19 +29,19 @@ public class Response implements RestResponse {
     }
 
     public Response() {
-        this(ResponseStatus.FAILURE);
+        this(RestResponseStatus.FAILURE);
     }
 
-    public Response(ResponseStatus responseCode) {
+    public Response(RestResponseStatus responseCode) {
         this(responseCode.getMessage(), responseCode.getStatus());
     }
 
     public Response(int status) {
-        this(ResponseStatus.FAILURE.getMessage(), status);
+        this(RestResponseStatus.FAILURE.getMessage(), status);
     }
 
     public Response(String message) {
-        this(message, ResponseStatus.FAILURE.getStatus());
+        this(message, RestResponseStatus.FAILURE.getStatus());
     }
 
     public Response(String message, int status) {
@@ -82,19 +82,19 @@ public class Response implements RestResponse {
         }
 
         public Success(T result) {
-            this(result, ResponseStatus.SUCCESS);
+            this(result, RestResponseStatus.SUCCESS);
         }
 
-        public Success(T result, ResponseStatus responseCode) {
+        public Success(T result, RestResponseStatus responseCode) {
             this(result, responseCode.getMessage(), responseCode.getStatus());
         }
 
         public Success(T result, int status) {
-            this(result, ResponseStatus.SUCCESS.getMessage(), status);
+            this(result, RestResponseStatus.SUCCESS.getMessage(), status);
         }
 
         public Success(T result, String message) {
-            this(result, message, ResponseStatus.SUCCESS.getStatus());
+            this(result, message, RestResponseStatus.SUCCESS.getStatus());
         }
 
         public Success(T result, String message, int status) {
@@ -147,18 +147,18 @@ public class Response implements RestResponse {
         }
 
         public Page(T result, Pagination page) {
-            this(result, page, ResponseStatus.SUCCESS.getMessage());
+            this(result, page, RestResponseStatus.SUCCESS.getMessage());
         }
 
         public Page(T result, Pagination page, int status) {
-            this(result, page, ResponseStatus.SUCCESS.getMessage(), status);
+            this(result, page, RestResponseStatus.SUCCESS.getMessage(), status);
         }
 
         public Page(T result, Pagination page, String message) {
-            this(result, page, message, ResponseStatus.SUCCESS.getStatus());
+            this(result, page, message, RestResponseStatus.SUCCESS.getStatus());
         }
 
-        public Page(T result, Pagination page, ResponseStatus responseCode) {
+        public Page(T result, Pagination page, RestResponseStatus responseCode) {
             this(result, page, responseCode.getMessage(), responseCode.getStatus());
         }
 
