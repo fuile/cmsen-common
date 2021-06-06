@@ -31,4 +31,16 @@ public abstract class AssertUtil {
             throw new IllegalArgumentException(message);
         }
     }
+
+    public static void isEmpty(CharSequence object, String message) {
+        if (!(object == null || object.length() == 0)) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void notEmpty(CharSequence object, String message) {
+        if (object == null || object.length() == 0) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 }
