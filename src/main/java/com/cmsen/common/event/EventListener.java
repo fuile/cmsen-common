@@ -8,5 +8,5 @@
 package com.cmsen.common.event;
 
 public interface EventListener {
-    public void event(Object o, String eventName);
+    void event(Object o, String eventName);
 }

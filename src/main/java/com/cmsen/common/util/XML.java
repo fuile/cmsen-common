@@ -11,16 +11,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class JSON {
-    private static final ObjectMapper mapper = new ObjectMapper();
+public class XML {
+    private static final XmlMapper mapper = new XmlMapper();
 
     static {
+        // mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.disable(MapperFeature.DEFAULT_VIEW_INCLUSION);
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
