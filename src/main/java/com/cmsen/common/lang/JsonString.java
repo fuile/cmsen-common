@@ -26,6 +26,6 @@ public class JsonString<T> {
 
     @Override
     public String toString() {
-        return object != null ? object.toString() : null;
+        return !isEmpty() ? object.toString() : null;
     }
 }
