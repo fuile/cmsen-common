@@ -19,9 +19,4 @@ public abstract class JsonParse<T> {
     public T getData() {
         return data;
     }
-
-    @Override
-    public String toString() {
-        return data != null ? data.toString() : null;
-    }
 }
