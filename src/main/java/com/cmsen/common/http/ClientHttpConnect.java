@@ -189,7 +189,7 @@ public class ClientHttpConnect {
         }
         if (httpRequest.getMethod().equals("POST")) {
             if (httpRequest.isStreamBinary()) {
-                connection.setRequestProperty("Content-Type", ContentEnctype.DATA + "; boundary=" + httpRequest.getBoundaryName());
+                connection.setRequestProperty("Content-Type", ContentEnctype.DATA + "; boundary=----" + httpRequest.getBoundaryName());
             } else {
                 connection.setRequestProperty("Content-Type", ContentEnctype.URLENCODED);
             }
@@ -204,28 +204,31 @@ public class ClientHttpConnect {
         }
     }
 
-    protected static void formData(URLConnection connection, ClientHttpRequest httpRequest) throws IOException {
+    protected static void formData(HttpURLConnection connection, ClientHttpRequest httpRequest) throws IOException {
         DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
         for (ClientRequestFormData streamBinary : httpRequest.getStreamBinary()) {
-            dos.writeBytes("----" + httpRequest.getBoundaryName() + "\r\n");
-            dos.writeBytes("Content-Disposition: form-data; name=\"" + streamBinary.getName() + "\"; filename=\"" + streamBinary.getFilename() + "\"\r\n");
-            dos.writeBytes("Content-Type:" + streamBinary.getFileType());
-            dos.writeBytes("\r\n");
+            dos.writeBytes("------" + httpRequest.getBoundaryName() + "\r\n");
+            if (streamBinary.getFilename() != null) {
+                dos.writeBytes("Content-Disposition: form-data; name=\"" + streamBinary.getName() + "\"; filename=\"" + streamBinary.getFilename() + "\"\r\n");
+            } else {
+                dos.writeBytes("Content-Disposition: form-data; name=\"" + streamBinary.getName() + "\"\r\n");
+            }
+            if (streamBinary.getFileType() != null) {
+                dos.writeBytes("Content-Type: " + streamBinary.getFileType() + "\r\n");
+            }
+            // dos.writeBytes("Content-Transfer-Encoding: binary");
             dos.writeBytes("\r\n");
             if (streamBinary.getStream() instanceof String) {
-                dos.write(FileUtil.getBytes(new File(streamBinary.getStreamString())));
+                dos.writeBytes(streamBinary.getStreamString());
             } else if (streamBinary.getStream() instanceof File) {
                 dos.write(FileUtil.getBytes(streamBinary.getStreamFile()));
             } else if (streamBinary.getStream() instanceof byte[]) {
                 dos.write(streamBinary.getStreamBytes());
             }
+            dos.writeBytes("\r\n");
         }
-        dos.writeBytes("\r\n");
-        dos.writeBytes("----" + httpRequest.getBoundaryName() + "--");
-        dos.writeBytes("\r\n");
+        dos.writeBytes("------" + httpRequest.getBoundaryName() + "--\r\n");
         dos.flush();
         dos.close();
-        // os.flush();
-        // os.close();
     }
 }

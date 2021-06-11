@@ -76,4 +76,14 @@ public class ClientRequestFormData {
     public void setStream(String stream) {
         this.stream = stream;
     }
+
+    @Override
+    public String toString() {
+        return "ClientRequestFormData{" +
+                "name='" + name + '\'' +
+                ", filename='" + filename + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", stream=" + stream +
+                '}';
+    }
 }

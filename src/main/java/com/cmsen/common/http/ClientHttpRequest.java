@@ -7,6 +7,8 @@
  */
 package com.cmsen.common.http;
 
+import com.cmsen.common.util.FileMime;
+import com.cmsen.common.util.StringUtil;
 import com.cmsen.common.util.UrlUtil;
 
 import java.io.File;
@@ -14,7 +16,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author jared.Yan (yanhuaiwen@163.com)
@@ -39,7 +44,7 @@ public class ClientHttpRequest {
     private ResponsePrintOutputStream printOutputStream;
 
     public ClientHttpRequest() {
-        this.boundaryName = UUID.randomUUID().toString();
+        this.boundaryName = StringUtil.randomString(16);
     }
 
     public ClientHttpRequest(String url) {
@@ -185,6 +190,14 @@ public class ClientHttpRequest {
         return streamBinary;
     }
 
+    public void setStreamBinary(String name, File stream) {
+        this.streamBinary.add(new ClientRequestFormData(name, stream.getName(), FileMime.get(stream.getName()), stream));
+    }
+
+    public void setStreamBinary(String name, String filename, File stream) {
+        this.streamBinary.add(new ClientRequestFormData(name, filename, FileMime.get(stream.getName()), stream));
+    }
+
     public void setStreamBinary(String name, String filename, String fileType, File stream) {
         this.streamBinary.add(new ClientRequestFormData(name, filename, fileType, stream));
     }
@@ -195,6 +208,14 @@ public class ClientHttpRequest {
 
     public void setStreamBinary(String name, String filename, String fileType, String stream) {
         this.streamBinary.add(new ClientRequestFormData(name, filename, fileType, stream));
+    }
+
+    public void setStreamBinary(String name, String stream) {
+        this.streamBinary.add(new ClientRequestFormData(name, null, null, stream));
+    }
+
+    public void setStreamBinary(String name, String stream, String fileType) {
+        this.streamBinary.add(new ClientRequestFormData(name, null, fileType, stream));
     }
 
     public void setStreamBinary(ClientRequestFormData name) {
