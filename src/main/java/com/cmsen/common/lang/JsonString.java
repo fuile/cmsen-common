@@ -9,14 +9,23 @@ package com.cmsen.common.lang;
 
 import com.cmsen.common.util.JSON;
 
-public abstract class JsonParse<T> {
-    protected T data;
+public class JsonString<T> {
+    private final T object;
 
-    protected JsonParse(String value) {
-        this.data = JSON.parse(value);
+    public JsonString(String value) {
+        this.object = JSON.parse(value);
     }
 
-    public T getData() {
-        return data;
+    public T getObject() {
+        return object;
+    }
+
+    public boolean isEmpty() {
+        return object == null;
+    }
+
+    @Override
+    public String toString() {
+        return object != null ? object.toString() : null;
     }
 }
